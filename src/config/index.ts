@@ -2,7 +2,6 @@ const config = {
     postgraphile: {
         SCHEMA: process.env.POSTGRESQL_SCHEMA,
         APP_CONN: process.env.POSTGRAPHILE_APP_CONN,
-        OWNER_CONN: process.env.POSTGRAPHILE_OWNER_CONN,
     },
     server: {
         PORT: process.env.PORT || 5000,
