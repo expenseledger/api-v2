@@ -1,0 +1,27 @@
+{
+    "name": "the-prince-api",
+    "version": "1.0.0",
+    "main": "dist/index.js",
+    "license": "MIT",
+    "scripts": {
+        "start": "node dist/index.js",
+        "build": "tsc",
+        "dev": "ts-node src/index.ts"
+    },
+    "dependencies": {
+        "@graphile-contrib/pg-simplify-inflector": "^6.0.0",
+        "cors": "^2.8.5",
+        "dotenv": "^8.2.0",
+        "express": "^4.17.1",
+        "firebase-admin": "^9.2.0",
+        "postgraphile": "^4.9.0"
+    },
+    "devDependencies": {
+        "@types/cors": "^2.8.7",
+        "@types/multer": "^1.4.4",
+        "@types/usb": "^1.5.2",
+        "prettier": "^2.1.2",
+        "ts-node": "^9.0.0",
+        "typescript": "^4.0.3"
+    }
+}
