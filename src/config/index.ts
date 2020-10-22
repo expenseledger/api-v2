@@ -10,10 +10,6 @@ const config = {
         SERVICE_ACCOUNT: process.env.FIREBASE_SERVICE_ACCOUNT || 'false',
         DATABASE_URL: process.env.FIREBASE_DATABASE_URL,
     },
-    paypal: {
-        CLIENT_ID: process.env.PAYPAL_CLIENT_ID,
-        CLIENT_SECRET: process.env.PAYPAL_CLIENT_SECRET,
-    },
 }
 
 export default config
