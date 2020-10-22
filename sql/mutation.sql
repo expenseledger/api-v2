@@ -38,3 +38,19 @@ $$
 COMMENT ON FUNCTION public.current_user() IS 'Get current logged-in user';
 
 GRANT EXECUTE ON FUNCTION public.current_user() TO authuser;
+
+CREATE OR REPLACE FUNCTION public.create_category(name text)
+    RETURNS public.category
+AS
+$$
+INSERT INTO public.category (name, owner_id)
+VALUES (name, current_setting('jwt.claims.firebase_uid', TRUE))
+RETURNING *
+$$
+    LANGUAGE SQL
+    STRICT
+    SECURITY DEFINER;
+
+COMMENT ON FUNCTION public.create_category(name text) IS 'create a new category to be used in transactions';
+
+GRANT EXECUTE ON FUNCTION public.create_category(name text) TO authuser;
