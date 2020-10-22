@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS account
     name       text         NOT NULL,
     type       account_type NOT NULL,
     balance    money        NOT NULL DEFAULT 0,
-    owner_id   text         NOT NULL REFERENCES public.owner (id) ON DELETE CASCADE,
+    owner_id   text         NOT NULL REFERENCES public.owner ON DELETE CASCADE,
     created_at timestamptz  NOT NULL DEFAULT now(),
     updated_at timestamptz  NOT NULL DEFAULT now(),
     UNIQUE (name, owner_id)
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS category
 (
     id         serial PRIMARY KEY,
     name       text        NOT NULL,
-    owner_id   text        NOT NULL REFERENCES public.owner (id) ON DELETE CASCADE,
+    owner_id   text        NOT NULL REFERENCES public.owner ON DELETE CASCADE,
     created_at timestamptz NOT NULL DEFAULT now(),
     updated_at timestamptz NOT NULL DEFAULT now(),
     UNIQUE (name, owner_id)
@@ -66,10 +66,10 @@ CREATE TABLE IF NOT EXISTS transaction
     amount          money            NOT NULL,
     type            transaction_type NOT NULL,
     description     text             NOT NULL DEFAULT '',
-    category_id     integer          NOT NULL REFERENCES public.category (id) ON DELETE CASCADE,
-    from_account_id integer REFERENCES public.account (id) ON DELETE CASCADE,
-    to_account_id   integer REFERENCES public.account (id) ON DELETE CASCADE,
-    owner_id        text             NOT NULL REFERENCES public.owner (id) ON DELETE CASCADE,
+    category_id     integer          NOT NULL REFERENCES public.category ON DELETE CASCADE,
+    from_account_id integer REFERENCES public.account ON DELETE CASCADE,
+    to_account_id   integer REFERENCES public.account ON DELETE CASCADE,
+    owner_id        text             NOT NULL REFERENCES public.owner ON DELETE CASCADE,
     occurred_at     timestamptz      NOT NULL DEFAULT now(),
     created_at      timestamptz      NOT NULL DEFAULT now(),
     updated_at      timestamptz      NOT NULL DEFAULT now()
