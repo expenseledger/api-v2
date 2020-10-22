@@ -25,8 +25,9 @@ BEGIN
     FROM public.owner
     WHERE id = current_setting('jwt.claims.firebase_uid', TRUE);
     IF o IS NULL THEN
-        SELECT public.new_owner()
-        INTO o;
+        SELECT *
+        INTO o
+        FROM public.new_owner();
     END IF;
     RETURN o;
 END;
