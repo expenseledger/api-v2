@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS owner
     created_at timestamptz NOT NULL DEFAULT now()
 );
 
+GRANT SELECT ON TABLE public.owner TO nologin,authuser;
 COMMENT ON TABLE public.owner IS E'@omit create,update,delete';
 
 CREATE TYPE public.account_type AS enum (
@@ -37,6 +38,7 @@ CREATE TABLE IF NOT EXISTS account
     UNIQUE (name, owner_id)
 );
 
+GRANT SELECT ON TABLE public.account TO nologin,authuser;
 COMMENT ON TABLE public.account IS E'@omit create,update,delete';
 
 CREATE TABLE IF NOT EXISTS category
@@ -49,6 +51,7 @@ CREATE TABLE IF NOT EXISTS category
     UNIQUE (name, owner_id)
 );
 
+GRANT SELECT ON TABLE public.category TO nologin,authuser;
 COMMENT ON TABLE public.category IS E'@omit create,update,delete';
 
 CREATE TYPE public.transaction_type AS enum (
@@ -72,4 +75,5 @@ CREATE TABLE IF NOT EXISTS transaction
     updated_at      timestamptz      NOT NULL DEFAULT now()
 );
 
+GRANT SELECT ON TABLE public.transaction TO nologin,authuser;
 COMMENT ON TABLE public.transaction IS E'@omit create,update,delete';
