@@ -11,6 +11,7 @@ $$
     SECURITY DEFINER;
 
 COMMENT ON FUNCTION public.new_owner () IS 'Add a new owner from Firebase user';
+COMMENT ON FUNCTION public.new_owner () IS E'@omit execute';
 
 CREATE OR REPLACE FUNCTION public.current_user()
     RETURNS public.owner

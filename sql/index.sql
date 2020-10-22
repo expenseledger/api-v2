@@ -6,9 +6,9 @@ GRANT nologin TO postgraphile;
 GRANT authuser TO postgraphile;
 
 -- after schema creation and before function creation
-ALTER DEFAULT privileges REVOKE EXECUTE ON functions FROM public;
+ALTER DEFAULT PRIVILEGES REVOKE EXECUTE ON FUNCTIONS FROM PUBLIC;
 
-GRANT usage ON SCHEMA public TO nologin, authuser;
+GRANT USAGE ON SCHEMA public TO nologin, authuser;
 
 CREATE TABLE IF NOT EXISTS owner
 (
@@ -16,6 +16,8 @@ CREATE TABLE IF NOT EXISTS owner
     updated_at timestamptz NOT NULL DEFAULT now(),
     created_at timestamptz NOT NULL DEFAULT now()
 );
+
+COMMENT ON TABLE public.owner IS E'@omit create,update,delete';
 
 CREATE TYPE public.account_type AS enum (
     'CASH',
@@ -35,6 +37,8 @@ CREATE TABLE IF NOT EXISTS account
     UNIQUE (name, owner_id)
 );
 
+COMMENT ON TABLE public.account IS E'@omit create,update,delete';
+
 CREATE TABLE IF NOT EXISTS category
 (
     id         serial PRIMARY KEY,
@@ -44,6 +48,8 @@ CREATE TABLE IF NOT EXISTS category
     updated_at timestamptz NOT NULL DEFAULT now(),
     UNIQUE (name, owner_id)
 );
+
+COMMENT ON TABLE public.category IS E'@omit create,update,delete';
 
 CREATE TYPE public.transaction_type AS enum (
     'EXPENSE',
@@ -65,3 +71,5 @@ CREATE TABLE IF NOT EXISTS transaction
     created_at      timestamptz      NOT NULL DEFAULT now(),
     updated_at      timestamptz      NOT NULL DEFAULT now()
 );
+
+COMMENT ON TABLE public.transaction IS E'@omit create,update,delete';
