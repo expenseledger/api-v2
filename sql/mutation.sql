@@ -10,8 +10,7 @@ $$
     STRICT
     SECURITY DEFINER;
 
-COMMENT ON FUNCTION public.new_owner () IS 'Add a new owner from Firebase user';
-COMMENT ON FUNCTION public.new_owner () IS E'@omit execute';
+COMMENT ON FUNCTION public.new_owner () IS E'@omit execute\nAdd a new owner from Firebase user';
 
 CREATE OR REPLACE FUNCTION public.current_user()
     RETURNS public.owner
@@ -36,7 +35,6 @@ $$
     SECURITY DEFINER;
 
 COMMENT ON FUNCTION public.current_user() IS 'Get current logged-in user';
-
 GRANT EXECUTE ON FUNCTION public.current_user() TO authuser;
 
 CREATE OR REPLACE FUNCTION public.create_category(name text)
