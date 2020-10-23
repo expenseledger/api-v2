@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS transaction
     amount          money            NOT NULL,
     type            transaction_type NOT NULL,
     description     text             NOT NULL DEFAULT '',
-    category_id     integer          NOT NULL REFERENCES public.category ON DELETE CASCADE,
+    category_id     integer REFERENCES public.category ON DELETE CASCADE,
     from_account_id integer REFERENCES public.account ON DELETE CASCADE,
     to_account_id   integer REFERENCES public.account ON DELETE CASCADE,
     owner_id        text             NOT NULL REFERENCES public.owner ON DELETE CASCADE,
