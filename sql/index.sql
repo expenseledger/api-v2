@@ -17,7 +17,11 @@ CREATE TABLE IF NOT EXISTS owner
     created_at timestamptz NOT NULL DEFAULT now()
 );
 
-GRANT SELECT ON TABLE public.owner TO nologin,authuser;
+ALTER TABLE public.owner
+    ENABLE ROW LEVEL SECURITY;
+GRANT SELECT ON TABLE public.owner TO authuser;
+CREATE POLICY owner_only ON public.owner TO authuser
+    USING (id = current_setting('jwt.claims.firebase_uid', TRUE));
 COMMENT ON TABLE public.owner IS E'@omit create,update,delete';
 
 CREATE TYPE public.account_type AS enum (
@@ -38,7 +42,11 @@ CREATE TABLE IF NOT EXISTS account
     UNIQUE (name, owner_id)
 );
 
-GRANT SELECT ON TABLE public.account TO nologin,authuser;
+ALTER TABLE public.account
+    ENABLE ROW LEVEL SECURITY;
+GRANT SELECT, UPDATE, DELETE ON TABLE public.account TO authuser;
+CREATE POLICY owner_only ON public.account TO authuser
+    USING (owner_id = current_setting('jwt.claims.firebase_uid', TRUE));
 COMMENT ON TABLE public.account IS E'@omit create,update,delete';
 
 CREATE TABLE IF NOT EXISTS category
@@ -51,7 +59,11 @@ CREATE TABLE IF NOT EXISTS category
     UNIQUE (name, owner_id)
 );
 
-GRANT SELECT ON TABLE public.category TO nologin,authuser;
+ALTER TABLE public.category
+    ENABLE ROW LEVEL SECURITY;
+GRANT SELECT, UPDATE, DELETE ON TABLE public.category TO authuser;
+CREATE POLICY owner_only ON public.category TO authuser
+    USING (owner_id = current_setting('jwt.claims.firebase_uid', TRUE));
 COMMENT ON TABLE public.category IS E'@omit create,update,delete';
 
 CREATE TYPE public.transaction_type AS enum (
@@ -75,5 +87,18 @@ CREATE TABLE IF NOT EXISTS transaction
     updated_at      timestamptz      NOT NULL DEFAULT now()
 );
 
-GRANT SELECT ON TABLE public.transaction TO nologin,authuser;
+ALTER TABLE public.transaction
+    ENABLE ROW LEVEL SECURITY;
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.transaction TO authuser;
+GRANT ALL ON SEQUENCE public.transaction_id_seq TO authuser;
+CREATE POLICY owner_only ON public.transaction TO authuser
+    USING (owner_id = current_setting('jwt.claims.firebase_uid', TRUE))
+    WITH CHECK (
+            category_id IN (SELECT id
+                            FROM public.category) AND
+            (from_account_id IN (SELECT id
+                                 FROM public.account) OR
+             to_account_id IN (SELECT id
+                               FROM public.account))
+    );
 COMMENT ON TABLE public.transaction IS E'@omit create,update,delete';
