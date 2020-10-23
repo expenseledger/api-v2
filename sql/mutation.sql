@@ -32,6 +32,7 @@ BEGIN
 END;
 $$
     LANGUAGE plpgsql
+    STRICT
     SECURITY DEFINER;
 
 COMMENT ON FUNCTION public.current_user() IS 'Get current logged-in user';
