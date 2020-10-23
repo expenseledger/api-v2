@@ -127,6 +127,7 @@ CREATE POLICY owner_only ON public.transaction TO authuser
                                FROM public.account))
     );
 COMMENT ON TABLE public.transaction IS E'@omit create,update,delete';
+COMMENT ON COLUMN public.transaction.occurred_at IS E'@name date';
 
 CREATE FUNCTION "transaction_fromAccount"(tx public.transaction)
     RETURNS public.account AS
