@@ -48,7 +48,8 @@ $$
 COMMENT ON FUNCTION public.receive(amount money, description text, category_id integer, to_account_id integer) IS 'add income transaction';
 GRANT EXECUTE ON FUNCTION public.receive(amount money, description text, category_id integer, to_account_id integer) TO authuser;
 
-CREATE OR REPLACE FUNCTION public.transfer(amount money, description text, from_account_id integer, to_account_id integer)
+CREATE OR REPLACE FUNCTION public.transfer(amount money, description text, from_account_id integer,
+                                           to_account_id integer)
     RETURNS public.transaction
 AS
 $$
