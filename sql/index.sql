@@ -1,5 +1,4 @@
 CREATE ROLE nologin;
-
 CREATE ROLE authuser;
 
 GRANT nologin TO postgraphile;
