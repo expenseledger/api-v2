@@ -119,12 +119,13 @@ GRANT ALL ON SEQUENCE public.transaction_id_seq TO authuser;
 CREATE POLICY owner_only ON public.transaction TO authuser
     USING (owner_id = current_setting('jwt.claims.firebase_uid', TRUE))
     WITH CHECK (
-            category_id IN (SELECT id
-                            FROM public.category) AND
-            (from_account_id IN (SELECT id
-                                 FROM public.account) OR
-             to_account_id IN (SELECT id
-                               FROM public.account))
+        (category_id IS NULL OR
+         category_id IN (SELECT id
+                         FROM public.category)) AND
+        (from_account_id IN (SELECT id
+                             FROM public.account) OR
+         to_account_id IN (SELECT id
+                           FROM public.account))
     );
 COMMENT ON TABLE public.transaction IS E'@omit create,update,delete';
 COMMENT ON COLUMN public.transaction.occurred_at IS E'@name date';
