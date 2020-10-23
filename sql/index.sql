@@ -10,12 +10,20 @@ ALTER DEFAULT PRIVILEGES REVOKE EXECUTE ON FUNCTIONS FROM PUBLIC;
 
 GRANT USAGE ON SCHEMA public TO nologin, authuser;
 
+CREATE EXTENSION IF NOT EXISTS moddatetime;
+
 CREATE TABLE IF NOT EXISTS owner
 (
     id         text PRIMARY KEY,
     updated_at timestamptz NOT NULL DEFAULT now(),
     created_at timestamptz NOT NULL DEFAULT now()
 );
+
+CREATE TRIGGER mdt_owner
+    BEFORE UPDATE
+    ON public.owner
+    FOR EACH ROW
+EXECUTE PROCEDURE moddatetime(updated_at);
 
 ALTER TABLE public.owner
     ENABLE ROW LEVEL SECURITY;
@@ -42,6 +50,12 @@ CREATE TABLE IF NOT EXISTS account
     UNIQUE (name, owner_id)
 );
 
+CREATE TRIGGER mdt_account
+    BEFORE UPDATE
+    ON public.account
+    FOR EACH ROW
+EXECUTE PROCEDURE moddatetime(updated_at);
+
 ALTER TABLE public.account
     ENABLE ROW LEVEL SECURITY;
 GRANT SELECT, UPDATE, DELETE ON TABLE public.account TO authuser;
@@ -58,6 +72,12 @@ CREATE TABLE IF NOT EXISTS category
     updated_at timestamptz NOT NULL DEFAULT now(),
     UNIQUE (name, owner_id)
 );
+
+CREATE TRIGGER mdt_category
+    BEFORE UPDATE
+    ON public.category
+    FOR EACH ROW
+EXECUTE PROCEDURE moddatetime(updated_at);
 
 ALTER TABLE public.category
     ENABLE ROW LEVEL SECURITY;
@@ -86,6 +106,12 @@ CREATE TABLE IF NOT EXISTS transaction
     created_at      timestamptz      NOT NULL DEFAULT now(),
     updated_at      timestamptz      NOT NULL DEFAULT now()
 );
+
+CREATE TRIGGER mdt_transaction
+    BEFORE UPDATE
+    ON public.transaction
+    FOR EACH ROW
+EXECUTE PROCEDURE moddatetime(updated_at);
 
 ALTER TABLE public.transaction
     ENABLE ROW LEVEL SECURITY;
