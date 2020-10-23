@@ -91,7 +91,7 @@ BEGIN
         UPDATE public.account SET balance = balance + tx.amount WHERE id = tx.from_account_id;
     END IF;
     IF tx.type = 'INCOME' OR tx.type = 'TRANSFER' THEN
-        UPDATE PUBLIC.account SET balance = balance - tx.amount WHERE id = tx.from_account_id;
+        UPDATE PUBLIC.account SET balance = balance - tx.amount WHERE id = tx.to_account_id;
     END IF;
 
     RETURN tx;
