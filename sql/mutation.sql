@@ -60,12 +60,10 @@ $$
 DELETE
 FROM public.category AS c
 WHERE c.id = $1
-  AND owner_id = current_setting('jwt.claims.firebase_uid', TRUE)
 RETURNING *
 $$
     LANGUAGE SQL
-    STRICT
-    SECURITY DEFINER;
+    STRICT;
 
 COMMENT ON FUNCTION public.delete_category(id integer) IS 'delete a category';
 GRANT EXECUTE ON FUNCTION public.delete_category(integer) TO authuser;
@@ -92,12 +90,10 @@ $$
 DELETE
 FROM public.account AS a
 WHERE a.id = $1
-  AND owner_id = current_setting('jwt.claims.firebase_uid', TRUE)
 RETURNING *
 $$
     LANGUAGE SQL
-    STRICT
-    SECURITY DEFINER;
+    STRICT;
 
 COMMENT ON FUNCTION public.close_account(id integer) IS 'close account';
 GRANT EXECUTE ON FUNCTION public.close_account(id integer) TO authuser;
