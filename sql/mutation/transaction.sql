@@ -77,3 +77,27 @@ $$
 
 COMMENT ON FUNCTION public.transfer(amount money, description text, from_account_id integer, to_account_id integer) IS 'add transfer transaction';
 GRANT EXECUTE ON FUNCTION public.transfer(amount money, description text, from_account_id integer, to_account_id integer) TO authuser;
+
+CREATE OR REPLACE FUNCTION public.delete_transaction(id integer)
+    RETURNS public.transaction
+AS
+$$
+DECLARE
+    tx public.transaction;
+BEGIN
+    DELETE FROM public.transaction AS t WHERE t.id = $1 RETURNING * INTO tx;
+
+    IF tx.type = 'EXPENSE' OR tx.type = 'TRANSFER' THEN
+        UPDATE public.account SET balance = balance + tx.amount WHERE id = tx.from_account_id;
+    END IF;
+    IF tx.type = 'INCOME' OR tx.type = 'TRANSFER' THEN
+        UPDATE PUBLIC.account SET balance = balance - tx.amount WHERE id = tx.from_account_id;
+    END IF;
+
+    RETURN tx;
+END;
+$$ LANGUAGE plpgsql
+    STRICT;
+
+COMMENT ON FUNCTION public.delete_transaction(id integer) IS 'add transfer transaction';
+GRANT EXECUTE ON FUNCTION public.delete_transaction(id integer) TO authuser;
