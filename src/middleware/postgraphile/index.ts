@@ -1,7 +1,6 @@
+import PgSimplifyInflectorPlugin from '@graphile-contrib/pg-simplify-inflector'
 import { Request } from 'express'
 import { postgraphile } from 'postgraphile'
-import PgSimplifyInflectorPlugin from '@graphile-contrib/pg-simplify-inflector'
-
 import config from '../../config'
 
 const pg = postgraphile(
@@ -18,6 +17,10 @@ const pg = postgraphile(
         additionalGraphQLContextFromRequest: async (req, _) => ({
             userId: req.auth?.firebaseUid,
         }),
+        externalGraphqlRoute:
+            process.env.NODE_ENV === 'production'
+                ? '/expenseledger/graphql'
+                : undefined,
     }
 )
 
