@@ -1,5 +1,4 @@
 CREATE ROLE nologin;
-
 CREATE ROLE authuser;
 
 GRANT nologin TO postgraphile;
@@ -120,29 +119,13 @@ GRANT ALL ON SEQUENCE public.transaction_id_seq TO authuser;
 CREATE POLICY owner_only ON public.transaction TO authuser
     USING (owner_id = current_setting('jwt.claims.firebase_uid', TRUE))
     WITH CHECK (
-            category_id IN (SELECT id
-                            FROM public.category) AND
-            (from_account_id IN (SELECT id
-                                 FROM public.account) OR
-             to_account_id IN (SELECT id
-                               FROM public.account))
+        (category_id IS NULL OR
+         category_id IN (SELECT id
+                         FROM public.category)) AND
+        (from_account_id IN (SELECT id
+                             FROM public.account) OR
+         to_account_id IN (SELECT id
+                           FROM public.account))
     );
 COMMENT ON TABLE public.transaction IS E'@omit create,update,delete';
-
-CREATE FUNCTION "transaction_fromAccount"(tx public.transaction)
-    RETURNS public.account AS
-$$
-SELECT *
-FROM public.account
-WHERE id = tx.from_account_id;
-$$ LANGUAGE sql STABLE;
-GRANT EXECUTE ON FUNCTION public."transaction_fromAccount"(tx public.transaction) TO authuser;
-
-CREATE FUNCTION "transaction_toAccount"(tx public.transaction)
-    RETURNS public.account AS
-$$
-SELECT *
-FROM public.account
-WHERE id = tx.to_account_id;
-$$ LANGUAGE sql STABLE;
-GRANT EXECUTE ON FUNCTION public."transaction_toAccount"(tx public.transaction) TO authuser;
+COMMENT ON COLUMN public.transaction.occurred_at IS E'@name date';

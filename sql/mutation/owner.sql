@@ -2,11 +2,31 @@ CREATE OR REPLACE FUNCTION public.new_owner()
     RETURNS public.owner
 AS
 $$
-INSERT INTO public.owner (id)
-VALUES (current_setting('jwt.claims.firebase_uid', TRUE))
-RETURNING *
+DECLARE
+    o   public.owner;
+    uid text;
+BEGIN
+    SELECT current_setting('jwt.claims.firebase_uid', TRUE) INTO uid;
+
+    INSERT INTO public.owner (id)
+    VALUES (uid)
+    RETURNING * INTO o;
+
+    INSERT INTO public.category (name, owner_id)
+    VALUES ('Food And Drink', uid),
+           ('Transportation', uid),
+           ('Shopping', uid),
+           ('Bill', uid),
+           ('Withdraw', uid);
+
+    INSERT INTO public.account (name, type, owner_id)
+    VALUES ('Cash', 'CASH', uid),
+           ('My Bank', 'BANK', uid);
+
+    RETURN o;
+END ;
 $$
-    LANGUAGE SQL
+    LANGUAGE plpgsql
     STRICT
     SECURITY DEFINER;
 
