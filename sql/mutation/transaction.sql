@@ -88,10 +88,10 @@ BEGIN
     DELETE FROM public.transaction AS t WHERE t.id = $1 RETURNING * INTO tx;
 
     IF tx.type = 'EXPENSE' OR tx.type = 'TRANSFER' THEN
-        UPDATE public.account SET balance = balance + tx.amount WHERE id = tx.from_account_id;
+        UPDATE public.account AS a SET balance = balance + tx.amount WHERE a.id = tx.from_account_id;
     END IF;
     IF tx.type = 'INCOME' OR tx.type = 'TRANSFER' THEN
-        UPDATE PUBLIC.account SET balance = balance - tx.amount WHERE id = tx.to_account_id;
+        UPDATE PUBLIC.account AS a SET balance = balance - tx.amount WHERE a.id = tx.to_account_id;
     END IF;
 
     RETURN tx;
