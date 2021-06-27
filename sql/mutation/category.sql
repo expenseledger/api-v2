@@ -27,3 +27,18 @@ $$
 
 COMMENT ON FUNCTION public.delete_category(id integer) IS 'delete a category';
 GRANT EXECUTE ON FUNCTION public.delete_category(integer) TO authuser;
+
+CREATE OR REPLACE FUNCTION public.update_category(id integer, name text)
+    RETURNS public.category
+AS
+$$
+UPDATE public.category c
+SET c.name = $2
+WHERE c.id = $1
+RETURNING *
+$$
+    LANGUAGE SQL  
+    STRICT;
+
+COMMENT ON FUNCTION public.update_category(id integer, name text) 'update a category';
+GRANT EXECUTE ON FUNCTION public.update_category(integer, text) TO authuser;
