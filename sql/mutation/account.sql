@@ -28,16 +28,16 @@ $$
 COMMENT ON FUNCTION public.close_account(id integer) IS 'close account';
 GRANT EXECUTE ON FUNCTION public.close_account(id integer) TO authuser;
 
-CREATE OR REPLACE FUNCTION public.update_account(id integer, name text, type public.account_type, balance money)
+CREATE OR REPLACE FUNCTION public.update_account(id integer, name text, type public.account_type)
     RETURNS public.account
 AS
 $$
 UPDATE public.account AS a
-SET a.name = $2, a.name = $3, a.type = $4, a.balance = $5
+SET a.name = $2, a.type = $3
 WHERE a.id = $1
 $$
     LANGUAGE SQL
     STRICT;
 
-COMMENT ON FUNCTION public.update_account(id integer, name text, type public.account_type, balance money) IS `update account`
-GRANT EXECUTE ON FUNCTION public.update_account(id integer, name text, type public.account_type, balance money) TO authuser;
+COMMENT ON FUNCTION public.update_account(id integer, name text, type public.account_type) IS `update account`
+GRANT EXECUTE ON FUNCTION public.update_account(id integer, name text, type public.account_type) TO authuser;
