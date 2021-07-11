@@ -12,12 +12,18 @@ BEGIN
     VALUES (uid)
     RETURNING * INTO o;
 
-    INSERT INTO public.category (name, owner_id)
-    VALUES ('Food And Drink', uid),
-           ('Transportation', uid),
-           ('Shopping', uid),
-           ('Bill', uid),
-           ('Withdraw', uid);
+    INSERT INTO public.category (name, owner_id, type)
+    VALUES ('Food And Drink', uid, 'EXPENSE'),
+           ('Transportation', uid, 'EXPENSE'),
+           ('Shopping', uid, 'EXPENSE'),
+           ('Bill', uid, 'EXPENSE'),
+           ('Petrol', uid, 'EXPENSE'),
+           ('Withdraw', uid, 'EXPENSE'),
+           ('Doctor', uid, 'EXPENSE'),
+           ('Game', uid, 'EXPENSE'),
+           ('Salary', uid, 'INCOME'),
+           ('Transfer', uid, 'TRANSFER'),
+           ('Other', uid, 'ANY');
 
     INSERT INTO public.account (name, type, owner_id)
     VALUES ('Cash', 'CASH', uid),

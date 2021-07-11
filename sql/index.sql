@@ -37,6 +37,12 @@ CREATE TYPE public.account_type AS enum (
     'CREDIT'
     );
 
+CREATE TYPE public.currency AS ENUM (
+	'EUR',
+	'THB',
+	'USD'
+    );
+
 CREATE TABLE IF NOT EXISTS account
 (
     id         serial PRIMARY KEY,
@@ -46,6 +52,7 @@ CREATE TABLE IF NOT EXISTS account
     owner_id   text         NOT NULL REFERENCES public.owner ON DELETE CASCADE,
     created_at timestamptz  NOT NULL DEFAULT now(),
     updated_at timestamptz  NOT NULL DEFAULT now(),
+    currency   currency     NOT NULL DEFAULT 'THB'::currency
     UNIQUE (name, owner_id)
 );
 
@@ -62,13 +69,22 @@ CREATE POLICY owner_only ON public.account TO authuser
     USING (owner_id = current_setting('jwt.claims.firebase_uid', TRUE));
 COMMENT ON TABLE public.account IS E'@omit create,update,delete';
 
+CREATE TYPE public.category_type AS enum
+(
+    'ANY',
+    'INCOME',
+    'EXPENSE',
+    'TRANSFER'
+)
+
 CREATE TABLE IF NOT EXISTS category
 (
     id         serial PRIMARY KEY,
-    name       text        NOT NULL,
-    owner_id   text        NOT NULL REFERENCES public.owner ON DELETE CASCADE,
-    created_at timestamptz NOT NULL DEFAULT now(),
-    updated_at timestamptz NOT NULL DEFAULT now(),
+    name       text             NOT NULL,
+    owner_id   text             NOT NULL REFERENCES public.owner ON DELETE CASCADE,
+    created_at timestamptz      NOT NULL DEFAULT now(),
+    updated_at timestamptz      NOT NULL DEFAULT now(),
+    type       category_type    NOT NULL DEFAULT 'ANY'::public.category_type,
     UNIQUE (name, owner_id)
 );
 
