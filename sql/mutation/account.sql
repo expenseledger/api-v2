@@ -1,4 +1,19 @@
-CREATE OR REPLACE FUNCTION public.create_account(name text, type public.account_type, balance money)
+CREATE OR REPLACE FUNCTION public.create_account(name text, balance money)
+    RETURNS public.account
+AS
+$$
+INSERT INTO public.account (name, balance, owner_id)
+VALUES ($1, $2, current_setting('jwt.claims.firebase_uid', TRUE))
+RETURNING *
+$$
+    LANGUAGE SQL
+    STRICT
+    SECURITY DEFINER;
+
+COMMENT ON FUNCTION public.create_account(name text, balance money) IS 'create a new account';
+GRANT EXECUTE ON FUNCTION public.create_account(NAME text, balance money) TO authuser;
+
+CREATE OR REPLACE FUNCTION public.create_account_v2(name text, type public.account_type, balance money)
     RETURNS public.account
 AS
 $$
@@ -10,8 +25,8 @@ $$
     STRICT
     SECURITY DEFINER;
 
-COMMENT ON FUNCTION public.create_account(name text, type public.account_type, balance money) IS 'create a new account';
-GRANT EXECUTE ON FUNCTION public.create_account(NAME text, TYPE public.account_type, balance money) TO authuser;
+COMMENT ON FUNCTION public.create_account(name text, type public.account_type, balance money) IS 'create a new account v2';
+GRANT EXECUTE ON FUNCTION public.create_account_v2(NAME text, TYPE public.account_type, balance money) TO authuser;
 
 CREATE OR REPLACE FUNCTION public.close_account(id integer)
     RETURNS public.account
@@ -28,7 +43,7 @@ $$
 COMMENT ON FUNCTION public.close_account(id integer) IS 'close account';
 GRANT EXECUTE ON FUNCTION public.close_account(id integer) TO authuser;
 
-CREATE OR REPLACE FUNCTION public.update_account(id integer, name text, type public.account_type)
+CREATE OR REPLACE FUNCTION public.update_account_v2(id integer, name text, type public.account_type)
     RETURNS public.account
 AS
 $$
