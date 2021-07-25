@@ -25,7 +25,7 @@ $$
     STRICT
     SECURITY DEFINER;
 
-COMMENT ON FUNCTION public.create_account(name text, type public.account_type, balance money) IS 'create a new account v2';
+COMMENT ON FUNCTION public.create_account_v2(name text, type public.account_type, balance money) IS 'create a new account v2';
 GRANT EXECUTE ON FUNCTION public.create_account_v2(NAME text, TYPE public.account_type, balance money) TO authuser;
 
 CREATE OR REPLACE FUNCTION public.close_account(id integer)
