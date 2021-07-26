@@ -1,4 +1,19 @@
-CREATE OR REPLACE FUNCTION public.create_category(name text, type public.category_type DEFAULT 'ANY')
+CREATE OR REPLACE FUNCTION public.create_category(name text)
+    RETURNS public.category
+AS
+$$
+INSERT INTO public.category (name, owner_id)
+VALUES ($1, current_setting('jwt.claims.firebase_uid', TRUE))
+RETURNING *
+$$
+    LANGUAGE SQL
+    STRICT
+    SECURITY DEFINER;
+
+COMMENT ON FUNCTION public.create_category(name text) IS 'create a new category to be used in transactions';
+GRANT EXECUTE ON FUNCTION public.create_category(NAME text) TO authuser;
+
+CREATE OR REPLACE FUNCTION public.create_category_v2(name text, type public.category_type)
     RETURNS public.category
 AS
 $$
@@ -10,8 +25,8 @@ $$
     STRICT
     SECURITY DEFINER;
 
-COMMENT ON FUNCTION public.create_category(name text, type public.category_type DEFAULT 'ANY') IS 'create a new category to be used in transactions';
-GRANT EXECUTE ON FUNCTION public.create_category(NAME text, type public.category_type DEFAULT 'ANY') TO authuser;
+COMMENT ON FUNCTION public.create_category_v2(name text, type public.category_type) IS 'create a new category to be used in transactions v2';
+GRANT EXECUTE ON FUNCTION public.create_category_v2(NAME text, type public.category_type) TO authuser;
 
 CREATE OR REPLACE FUNCTION public.delete_category(id integer)
     RETURNS public.category
