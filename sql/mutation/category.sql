@@ -47,13 +47,13 @@ CREATE OR REPLACE FUNCTION public.update_category(id integer, name text, type pu
     RETURNS public.category
 AS
 $$
-UPDATE public.category c
-SET c.name = $2, c.type = $3
-WHERE c.id = $1
+UPDATE public.category
+SET name = $2, type = $3
+WHERE id = $1
 RETURNING *
 $$
     LANGUAGE SQL  
     STRICT;
 
-COMMENT ON FUNCTION public.update_category(id integer, name text, type public.category_type) 'update a category';
-GRANT EXECUTE ON FUNCTION public.update_category(integer, text) TO authuser;
+COMMENT ON FUNCTION public.update_category(id integer, name text, type public.category_type) IS 'update a category';
+GRANT EXECUTE ON FUNCTION public.update_category(integer, text, type public.category_type) TO authuser;

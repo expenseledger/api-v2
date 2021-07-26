@@ -32,12 +32,13 @@ CREATE OR REPLACE FUNCTION public.update_account(id integer, name text, type pub
     RETURNS public.account
 AS
 $$
-UPDATE public.account AS a
-SET a.name = $2, a.type = $3
-WHERE a.id = $1
+UPDATE public.account
+SET name = $2, type = $3
+WHERE id = $1
+RETURNING *
 $$
     LANGUAGE SQL
     STRICT;
 
-COMMENT ON FUNCTION public.update_account(id integer, name text, type public.account_type) IS `update account`
+COMMENT ON FUNCTION public.update_account(id integer, name text, type public.account_type) IS 'update account'
 GRANT EXECUTE ON FUNCTION public.update_account(id integer, name text, type public.account_type) TO authuser;
