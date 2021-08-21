@@ -1,0 +1,14 @@
+{
+    "npm": {
+        "publish": false
+    },
+    "git": {
+        "commitMessage": "Release v${version}",
+        "tagName": "v${version}",
+        "tagAnnotation": "v${version}"
+    },
+    "github": {
+        "release": true,
+        "releaseName": "v${version}"
+    }
+}
