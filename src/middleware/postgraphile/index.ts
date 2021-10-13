@@ -1,13 +1,14 @@
-import PgSimplifyInflectorPlugin from '@graphile-contrib/pg-simplify-inflector'
-import { Request } from 'express'
-import { postgraphile } from 'postgraphile'
-import config from '../../config'
+import PgSimplifyInflectorPlugin from '@graphile-contrib/pg-simplify-inflector';
+import { Request } from 'express';
+import { postgraphile } from 'postgraphile';
+import ConnectionFilterPlugin from 'postgraphile-plugin-connection-filter';
+import config from '../../config';
 
 const pg = postgraphile(
     config.postgraphile.APP_CONN,
     config.postgraphile.SCHEMA,
     {
-        appendPlugins: [PgSimplifyInflectorPlugin],
+        appendPlugins: [PgSimplifyInflectorPlugin, ConnectionFilterPlugin],
         graphiql: true,
         enhanceGraphiql: true,
         pgSettings: async (req: Request) => ({
@@ -22,6 +23,6 @@ const pg = postgraphile(
                 ? '/expenseledger/graphql'
                 : undefined,
     }
-)
+);
 
-export default pg
+export default pg;
