@@ -1,11 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import admin from '../lib/firebase';
 
-export default async function checkAuth(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
+export default async function checkAuth(req: Request, res: Response, next: NextFunction) {
     req.auth = { role: 'nologin' };
 
     const authString = req.headers.authorization;

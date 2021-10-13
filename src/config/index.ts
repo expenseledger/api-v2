@@ -1,3 +1,7 @@
+import * as dotenv from 'dotenv';
+
+dotenv.config();
+
 const config = {
     postgraphile: {
         SCHEMA: process.env.POSTGRESQL_SCHEMA,
