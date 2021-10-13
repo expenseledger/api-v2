@@ -7,20 +7,28 @@
         "start": "tsc && node dist/index.js",
         "build": "tsc",
         "dev": "ts-node src/index.ts",
-        "release": "release-it"
+        "release": "release-it",
+        "eslint": "eslint"
     },
     "dependencies": {
         "@graphile-contrib/pg-simplify-inflector": "^6.1.0",
         "cors": "^2.8.5",
-        "dotenv": "^8.2.0",
+        "dotenv": "^10.0.0",
         "express": "^4.17.1",
         "firebase-admin": "^9.4.2",
-        "postgraphile": "^4.11.0"
+        "postgraphile": "^4.11.0",
+        "postgraphile-plugin-connection-filter": "^2.2.2"
     },
     "devDependencies": {
         "@types/cors": "^2.8.7",
         "@types/multer": "^1.4.4",
         "@types/usb": "^1.5.2",
+        "@typescript-eslint/eslint-plugin": "^5.0.0",
+        "@typescript-eslint/parser": "^5.0.0",
+        "eslint": "^8.0.0",
+        "eslint-config-google": "^0.14.0",
+        "eslint-config-prettier": "^8.3.0",
+        "eslint-plugin-prettier": "^4.0.0",
         "prettier": "^2.1.2",
         "release-it": "^14.11.5",
         "ts-node": "^9.0.0",
