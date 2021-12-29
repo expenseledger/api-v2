@@ -23,7 +23,7 @@ SELECT DISTINCT TO_CHAR(tx.occurred_at , 'YYYY-MM') AS month_year
 FROM public.transaction tx
 WHERE tx.to_account_id = account_id OR tx.from_account_id = account_id
 GROUP BY tx.occurred_at
-ORDER BY month_year DESC
+ORDER BY month_year ASC
 $$ LANGUAGE sql STABLE;
 GRANT EXECUTE ON FUNCTION public."transaction_month_year_list_by_account_id"(account_id int) TO authuser;
 
