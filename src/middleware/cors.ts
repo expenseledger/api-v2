@@ -4,7 +4,7 @@ const allowed = cors({
     origin: [
         'http://localhost:3000',
         'https://expense-ledger-web.herokuapp.com',
-        'https://expenseledger.vercel.app/',
+        'https://expenseledger.vercel.app',
     ],
 });
 
