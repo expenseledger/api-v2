@@ -16,8 +16,8 @@
         "dotenv": "^10.0.0",
         "express": "^4.17.1",
         "firebase-admin": "^9.4.2",
-        "postgraphile": "^4.11.0",
-        "postgraphile-plugin-connection-filter": "^2.2.2"
+        "postgraphile": "^4.12.9",
+        "postgraphile-plugin-connection-filter": "^2.3.0"
     },
     "devDependencies": {
         "@types/cors": "^2.8.7",
