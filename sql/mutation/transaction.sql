@@ -86,7 +86,7 @@ $$
 DECLARE
     tx public.transaction;
 BEGIN
-    INSERT INTO public.transaction (amount, type, description, category_id from_account_id, to_account_id, owner_id, occurred_at)
+    INSERT INTO public.transaction (amount, type, description, category_id, from_account_id, to_account_id, owner_id, occurred_at)
     VALUES ($1, 'TRANSFER', $2, $3, $4, $5, current_setting('jwt.claims.firebase_uid', TRUE), $6)
     RETURNING * INTO tx;
 
