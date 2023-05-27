@@ -129,5 +129,42 @@ END;
 $$ LANGUAGE plpgsql
     STRICT;
 
-COMMENT ON FUNCTION public.delete_transaction(id integer) IS 'add transfer transaction';
+COMMENT ON FUNCTION public.delete_transaction(id integer) IS 'delete transaction';
 GRANT EXECUTE ON FUNCTION public.delete_transaction(id integer) TO authuser;
+
+CREATE OR REPLACE FUNCTION public.update_transaction(id integer, amount money, description text, category_id integer, occurred_at timestamptz)
+    RETURNS public.transaction
+AS
+$$
+DECLARE 
+    old_tx public.transaction;
+    tx public.transaction;
+BEGIN
+    SELECT * INTO old_tx
+    FROM public.transaction AS t 
+    WHERE t.id = $1;
+
+    UPDATE public.transaction AS t
+    SET t.amount = $2
+        , t.description = $3
+        , t.category_id = $4
+        , t.occurred_at = $5
+    WHERE t.id = $1
+    RETURNING * INTO tx;
+
+    IF old_tx.type = 'EXPENSE' OR old_tx.type = 'TRANSFER' THEN
+        UPDATE public.account AS a SET balance = balance + old_tx.amount WHERE a.id = old_tx.from_account_id;
+        UPDATE public.account AS a SET balance = balance - $2 WHERE a.id = old_tx.from_account_id;
+    END IF;
+    IF old_tx.type = 'INCOME' OR old_tx.type = 'TRANSFER' THEN
+        UPDATE public.account AS a SET balance = balance - old_tx.amount WHERE a.id = old_tx.to_account_id;
+        UPDATE public.account AS a SET balance = balance + $2 WHERE a.id = old_tx.to_account_id;
+    END IF;
+
+    RETURN tx;
+END;
+$$ LANGUAGE plpgsql
+    STRICT;
+
+COMMENT ON FUNCTION public.update_transaction(id integer, amount money, description text, category_id integer, occurred_at timestamptz) IS 'update transaction';
+GRANT EXECUTE ON FUNCTION public.update_transaction(id integer, amount money, description text, category_id integer, occurred_at timestamptz) TO authuser;
