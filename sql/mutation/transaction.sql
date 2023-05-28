@@ -145,10 +145,10 @@ BEGIN
     WHERE t.id = $1;
 
     UPDATE public.transaction AS t
-    SET t.amount = $2
-        , t.description = $3
-        , t.category_id = $4
-        , t.occurred_at = $5
+    SET amount = $2
+        , description = $3
+        , category_id = $4
+        , occurred_at = $5
     WHERE t.id = $1
     RETURNING * INTO tx;
 
