@@ -129,8 +129,29 @@ END;
 $$ LANGUAGE plpgsql
     STRICT;
 
-COMMENT ON FUNCTION public.delete_transaction(id integer) IS 'delete transaction';
-GRANT EXECUTE ON FUNCTION public.delete_transaction(id integer) TO authuser;
+CREATE OR REPLACE FUNCTION public.delete_transaction_v2(id integer)
+    RETURNS public.transaction
+AS
+$$
+DECLARE
+    tx public.transaction;
+BEGIN
+    DELETE FROM public.transaction AS t WHERE t.id = $1 and t.owner_id = current_setting('jwt.claims.firebase_uid', TRUE) RETURNING * INTO tx;
+
+    IF tx.type = 'EXPENSE' OR tx.type = 'TRANSFER' THEN
+        UPDATE public.account AS a SET balance = balance + tx.amount WHERE a.id = tx.from_account_id and a.owner_id = current_setting('jwt.claims.firebase_uid', TRUE);
+    END IF;
+    IF tx.type = 'INCOME' OR tx.type = 'TRANSFER' THEN
+        UPDATE PUBLIC.account AS a SET balance = balance - tx.amount WHERE a.id = tx.to_account_id and a.owner_id = current_setting('jwt.claims.firebase_uid', TRUE);
+    END IF;
+
+    RETURN tx;
+END;
+$$ LANGUAGE plpgsql
+    STRICT;
+
+COMMENT ON FUNCTION public.delete_transaction_v2(id integer) IS 'delete transaction';
+GRANT EXECUTE ON FUNCTION public.delete_transaction_v2(id integer) TO authuser;
 
 CREATE OR REPLACE FUNCTION public.update_transaction(id integer, amount money, description text, category_id integer, occurred_at timestamptz)
     RETURNS public.transaction
@@ -168,3 +189,42 @@ $$ LANGUAGE plpgsql
 
 COMMENT ON FUNCTION public.update_transaction(id integer, amount money, description text, category_id integer, occurred_at timestamptz) IS 'update transaction';
 GRANT EXECUTE ON FUNCTION public.update_transaction(id integer, amount money, description text, category_id integer, occurred_at timestamptz) TO authuser;
+
+CREATE OR REPLACE FUNCTION public.update_transaction_v2(id integer, amount money, description text, category_id integer, occurred_at timestamptz)
+    RETURNS public.transaction
+AS
+$$
+DECLARE 
+    old_tx public.transaction;
+    tx public.transaction;
+BEGIN
+    SELECT * INTO old_tx
+    FROM public.transaction AS t 
+    WHERE t.id = $1;
+    AND t.owner_id = current_setting('jwt.claims.firebase_uid', TRUE);
+
+    UPDATE public.transaction AS t
+    SET amount = $2
+        , description = $3
+        , category_id = $4
+        , occurred_at = $5
+    WHERE t.id = $1
+    AND t.owner_id = current_setting('jwt.claims.firebase_uid', TRUE);
+    RETURNING * INTO tx;
+
+    IF old_tx.type = 'EXPENSE' OR old_tx.type = 'TRANSFER' THEN
+        UPDATE public.account AS a SET balance = balance + old_tx.amount WHERE a.id = old_tx.from_account_id and a.owner_id = current_setting('jwt.claims.firebase_uid', TRUE);
+        UPDATE public.account AS a SET balance = balance - $2 WHERE a.id = old_tx.from_account_id and a.owner_id = current_setting('jwt.claims.firebase_uid', TRUE);
+    END IF;
+    IF old_tx.type = 'INCOME' OR old_tx.type = 'TRANSFER' THEN
+        UPDATE public.account AS a SET balance = balance - old_tx.amount WHERE a.id = old_tx.to_account_id and a.owner_id = current_setting('jwt.claims.firebase_uid', TRUE);
+        UPDATE public.account AS a SET balance = balance + $2 WHERE a.id = old_tx.to_account_id and a.owner_id = current_setting('jwt.claims.firebase_uid', TRUE);
+    END IF;
+
+    RETURN tx;
+END;
+$$ LANGUAGE plpgsql
+    STRICT;
+
+COMMENT ON FUNCTION public.update_transaction_v2(id integer, amount money, description text, category_id integer, occurred_at timestamptz) IS 'update transaction';
+GRANT EXECUTE ON FUNCTION public.update_transaction_v2(id integer, amount money, description text, category_id integer, occurred_at timestamptz) TO authuser;
