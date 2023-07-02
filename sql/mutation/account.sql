@@ -44,5 +44,5 @@ $$
     LANGUAGE SQL
     STRICT;
 
-COMMENT ON FUNCTION public.update_account(id integer, name text, type public.account_type) IS 'update account'
+COMMENT ON FUNCTION public.update_account(id integer, name text, type public.account_type) IS 'update account';
 GRANT EXECUTE ON FUNCTION public.update_account(id integer, name text, type public.account_type) TO authuser;
