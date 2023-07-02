@@ -200,7 +200,7 @@ DECLARE
 BEGIN
     SELECT * INTO old_tx
     FROM public.transaction AS t 
-    WHERE t.id = $1;
+    WHERE t.id = $1
     AND t.owner_id = current_setting('jwt.claims.firebase_uid', TRUE);
 
     UPDATE public.transaction AS t
@@ -209,7 +209,7 @@ BEGIN
         , category_id = $4
         , occurred_at = $5
     WHERE t.id = $1
-    AND t.owner_id = current_setting('jwt.claims.firebase_uid', TRUE);
+    AND t.owner_id = current_setting('jwt.claims.firebase_uid', TRUE)
     RETURNING * INTO tx;
 
     IF old_tx.type = 'EXPENSE' OR old_tx.type = 'TRANSFER' THEN
