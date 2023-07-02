@@ -35,6 +35,7 @@ $$
 DELETE
 FROM public.category AS c
 WHERE c.id = $1
+AND c.owner_id = current_setting('jwt.claims.firebase_uid', TRUE)
 RETURNING *
 $$
     LANGUAGE SQL
@@ -50,6 +51,7 @@ $$
 UPDATE public.category
 SET name = $2, type = $3
 WHERE id = $1
+AND owner_id = current_setting('jwt.claims.firebase_uid', TRUE)
 RETURNING *
 $$
     LANGUAGE SQL  

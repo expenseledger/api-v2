@@ -115,13 +115,13 @@ $$
 DECLARE
     tx public.transaction;
 BEGIN
-    DELETE FROM public.transaction AS t WHERE t.id = $1 RETURNING * INTO tx;
+    DELETE FROM public.transaction AS t WHERE t.id = $1 and t.owner_id = current_setting('jwt.claims.firebase_uid', TRUE) RETURNING * INTO tx;
 
     IF tx.type = 'EXPENSE' OR tx.type = 'TRANSFER' THEN
-        UPDATE public.account AS a SET balance = balance + tx.amount WHERE a.id = tx.from_account_id;
+        UPDATE public.account AS a SET balance = balance + tx.amount WHERE a.id = tx.from_account_id and a.owner_id = current_setting('jwt.claims.firebase_uid', TRUE);
     END IF;
     IF tx.type = 'INCOME' OR tx.type = 'TRANSFER' THEN
-        UPDATE PUBLIC.account AS a SET balance = balance - tx.amount WHERE a.id = tx.to_account_id;
+        UPDATE PUBLIC.account AS a SET balance = balance - tx.amount WHERE a.id = tx.to_account_id and a.owner_id = current_setting('jwt.claims.firebase_uid', TRUE);
     END IF;
 
     RETURN tx;
@@ -142,7 +142,8 @@ DECLARE
 BEGIN
     SELECT * INTO old_tx
     FROM public.transaction AS t 
-    WHERE t.id = $1;
+    WHERE t.id = $1
+    AND t.owner_id = current_setting('jwt.claims.firebase_uid', TRUE);
 
     UPDATE public.transaction AS t
     SET amount = $2
@@ -150,15 +151,16 @@ BEGIN
         , category_id = $4
         , occurred_at = $5
     WHERE t.id = $1
+    AND t.owner_id = current_setting('jwt.claims.firebase_uid', TRUE)
     RETURNING * INTO tx;
 
     IF old_tx.type = 'EXPENSE' OR old_tx.type = 'TRANSFER' THEN
-        UPDATE public.account AS a SET balance = balance + old_tx.amount WHERE a.id = old_tx.from_account_id;
-        UPDATE public.account AS a SET balance = balance - $2 WHERE a.id = old_tx.from_account_id;
+        UPDATE public.account AS a SET balance = balance + old_tx.amount WHERE a.id = old_tx.from_account_id and a.owner_id = current_setting('jwt.claims.firebase_uid', TRUE);
+        UPDATE public.account AS a SET balance = balance - $2 WHERE a.id = old_tx.from_account_id and a.owner_id = current_setting('jwt.claims.firebase_uid', TRUE);
     END IF;
     IF old_tx.type = 'INCOME' OR old_tx.type = 'TRANSFER' THEN
-        UPDATE public.account AS a SET balance = balance - old_tx.amount WHERE a.id = old_tx.to_account_id;
-        UPDATE public.account AS a SET balance = balance + $2 WHERE a.id = old_tx.to_account_id;
+        UPDATE public.account AS a SET balance = balance - old_tx.amount WHERE a.id = old_tx.to_account_id and a.owner_id = current_setting('jwt.claims.firebase_uid', TRUE);
+        UPDATE public.account AS a SET balance = balance + $2 WHERE a.id = old_tx.to_account_id and a.owner_id = current_setting('jwt.claims.firebase_uid', TRUE);
     END IF;
 
     RETURN tx;

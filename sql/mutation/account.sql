@@ -20,6 +20,7 @@ $$
 DELETE
 FROM public.account AS a
 WHERE a.id = $1
+AND a.owner_id = current_setting('jwt.claims.firebase_uid', TRUE)
 RETURNING *
 $$
     LANGUAGE SQL
@@ -33,12 +34,15 @@ CREATE OR REPLACE FUNCTION public.update_account(id integer, name text, type pub
 AS
 $$
 UPDATE public.account
-SET name = $2, type = $3
+SET name = $2, 
+    type = $3
 WHERE id = $1
+AND owner_id = current_setting('jwt.claims.firebase_uid', TRUE)
+
 RETURNING *
 $$
     LANGUAGE SQL
     STRICT;
 
-COMMENT ON FUNCTION public.update_account(id integer, name text, type public.account_type) IS 'update account'
+COMMENT ON FUNCTION public.update_account(id integer, name text, type public.account_type) IS 'update account';
 GRANT EXECUTE ON FUNCTION public.update_account(id integer, name text, type public.account_type) TO authuser;
