@@ -35,6 +35,7 @@ $$
 DELETE
 FROM public.category AS c
 WHERE c.id = $1
+AND c.owner_id = current_setting('jwt.claims.firebase_uid', TRUE)
 RETURNING *
 $$
     LANGUAGE SQL
@@ -43,38 +44,7 @@ $$
 COMMENT ON FUNCTION public.delete_category(id integer) IS 'delete a category';
 GRANT EXECUTE ON FUNCTION public.delete_category(integer) TO authuser;
 
-CREATE OR REPLACE FUNCTION public.delete_category_v2(id integer)
-    RETURNS public.category
-AS
-$$
-DELETE
-FROM public.category AS c
-WHERE c.id = $1
-AND c.owner_id = current_setting('jwt.claims.firebase_uid', TRUE)
-RETURNING *
-$$
-    LANGUAGE SQL
-    STRICT;
-
-COMMENT ON FUNCTION public.delete_category_v2(id integer) IS 'delete a category';
-GRANT EXECUTE ON FUNCTION public.delete_category_v2(integer) TO authuser;
-
 CREATE OR REPLACE FUNCTION public.update_category(id integer, name text, type public.category_type)
-    RETURNS public.category
-AS
-$$
-UPDATE public.category
-SET name = $2, type = $3
-WHERE id = $1
-RETURNING *
-$$
-    LANGUAGE SQL  
-    STRICT;
-
-COMMENT ON FUNCTION public.update_category(id integer, name text, type public.category_type) IS 'update a category';
-GRANT EXECUTE ON FUNCTION public.update_category(integer, text, type public.category_type) TO authuser;
-
-CREATE OR REPLACE FUNCTION public.update_category_v2(id integer, name text, type public.category_type)
     RETURNS public.category
 AS
 $$
@@ -87,5 +57,5 @@ $$
     LANGUAGE SQL  
     STRICT;
 
-COMMENT ON FUNCTION public.update_category_v2(id integer, name text, type public.category_type) IS 'update a category';
-GRANT EXECUTE ON FUNCTION public.update_category_v2(integer, text, type public.category_type) TO authuser;
+COMMENT ON FUNCTION public.update_category(id integer, name text, type public.category_type) IS 'update a category';
+GRANT EXECUTE ON FUNCTION public.update_category(integer, text, type public.category_type) TO authuser;
