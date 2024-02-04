@@ -1,6 +1,6 @@
 {
     "name": "expenseledger-api-v2",
-    "version": "1.16.0",
+    "version": "1.17.0",
     "main": "dist/index.js",
     "license": "MIT",
     "scripts": {
