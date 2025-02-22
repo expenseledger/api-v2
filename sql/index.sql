@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS account
     owner_id   text         NOT NULL REFERENCES public.owner ON DELETE CASCADE,
     created_at timestamptz  NOT NULL DEFAULT now(),
     updated_at timestamptz  NOT NULL DEFAULT now(),
-    currency   currency     NOT NULL DEFAULT 'THB'::currency
+    currency   currency     NOT NULL DEFAULT 'THB'::currency,
     UNIQUE (name, owner_id)
 );
 
@@ -75,7 +75,7 @@ CREATE TYPE public.category_type AS enum
     'INCOME',
     'EXPENSE',
     'TRANSFER'
-)
+);
 
 CREATE TABLE IF NOT EXISTS category
 (
