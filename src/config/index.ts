@@ -8,7 +8,7 @@ const config = {
         APP_CONN: process.env.POSTGRAPHILE_APP_CONN,
     },
     server: {
-        PORT: process.env.PORT || 5000,
+        PORT: process.env.PORT || 8080,
     },
     firebase: {
         SERVICE_ACCOUNT: process.env.FIREBASE_SERVICE_ACCOUNT || 'false',
